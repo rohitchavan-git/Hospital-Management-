@@ -4,6 +4,7 @@ import javax.persistence.Embeddable;
 
 /**
  * Insurance pojo for component inheritance
+ * 
  * @author Rohit Chavan
  *
  */
