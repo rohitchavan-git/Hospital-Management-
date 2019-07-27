@@ -18,34 +18,22 @@ public class Appointment {
 	private boolean ended;
 	private String reason;
 
-	@ManyToOne
-	private Patient patient;
-	@ManyToOne
-	private Doctor doctor;
-	
-	
+	@ManyToOne(targetEntity = Patient.class)
+	private Patient patients;
+	@ManyToOne(targetEntity = Doctor.class)
+	private Doctor doctors;
+
 	public Appointment() {
 	}
 
-	public Appointment(Timestamp appointmentTimestamp, boolean stared, boolean ended, String reason) {
+	public Appointment(Timestamp appointmentTimestamp, boolean stared, boolean ended, String reason, Patient patient,
+			Doctor doctor) {
 		this.appointmentTimestamp = appointmentTimestamp;
 		this.stared = stared;
 		this.ended = ended;
 		this.reason = reason;
-	}
-
-	public Appointment(Long id, Timestamp appointmentTimestamp, boolean stared, boolean ended, String reason) {
-		this.id = id;
-		this.appointmentTimestamp = appointmentTimestamp;
-		this.stared = stared;
-		this.ended = ended;
-		this.reason = reason;
-	}
-
-	@Override
-	public String toString() {
-		return "Appointment [id=" + id + ", appointmentTimestamp=" + appointmentTimestamp + ", stared=" + stared
-				+ ", ended=" + ended + ", reason=" + reason + "]";
+		this.patients = patient;
+		this.doctors = doctor;
 	}
 
 	public Long getId() {
@@ -86,6 +74,28 @@ public class Appointment {
 
 	public void setReason(String reason) {
 		this.reason = reason;
+	}
+
+	public Patient getPatient() {
+		return patients;
+	}
+
+	public void setPatient(Patient patient) {
+		this.patients = patient;
+	}
+
+	public Doctor getDoctor() {
+		return doctors;
+	}
+
+	public void setDoctor(Doctor doctor) {
+		this.doctors = doctor;
+	}
+
+	@Override
+	public String toString() {
+		return "Appointment [id=" + id + ", appointmentTimestamp=" + appointmentTimestamp + ", stared=" + stared
+				+ ", ended=" + ended + ", reason=" + reason + ", patient=" + patients + ", doctor=" + doctors + "]";
 	}
 
 }
