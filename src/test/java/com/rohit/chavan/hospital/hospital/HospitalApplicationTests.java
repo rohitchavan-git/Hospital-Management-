@@ -1,6 +1,12 @@
 package com.rohit.chavan.hospital.hospital;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.function.Supplier;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.rohit.chavan.hospital.hospital.entity.Appointment;
 import com.rohit.chavan.hospital.hospital.entity.Doctor;
 import com.rohit.chavan.hospital.hospital.entity.Insurance;
 import com.rohit.chavan.hospital.hospital.entity.Patient;
@@ -33,9 +40,7 @@ public class HospitalApplicationTests {
 	}
 
 	/**
-	 * Test Dotor Entity
-	 * 
-	 * @author Rohit chavan
+	 *Adding doctors into database
 	 */
 	@Test
 	public void addDotors() {
@@ -70,6 +75,10 @@ public class HospitalApplicationTests {
 	@Autowired
 	private PatientRepo patientRepo;
 
+	/**
+	 * Adding Patients into databases 
+	 */
+	
 	@Test
 	public void addPatient() {
 
@@ -101,6 +110,9 @@ public class HospitalApplicationTests {
 		patientRepo.saveAll(patients);
 	}
 	
+	/**
+	 * Update the Patients Mobile number using id
+	 */
 	@Test
 	public void updatePatient() {
 		Patient patient1 = new Patient();
@@ -116,4 +128,58 @@ public class HospitalApplicationTests {
 	
 	}
 	
+	@Autowired
+	private AppointmentRepo appointmentRepo;
+	
+	/**
+	 * make appointments and assign doctors and patient.
+	 * 
+	 */
+	@Test
+	public void addAppointment() {
+		
+		Appointment appointment = new Appointment();
+		Timestamp appointmentTimestamp=new Timestamp(new Date().getTime());
+		appointment.setAppointmentTimestamp(appointmentTimestamp);
+		appointment.setReason("I have Problem");
+		appointment.setStared(true);
+		appointment.setEnded(false);
+		appointment.setDoctor(doctorRepo.findById(1L).get());
+		appointment.setPatient(patientRepo.findById(5L).get());
+		appointmentRepo.save(appointment);
+		
+		
+	}
+	
+	/**
+	 * Fetch the appointment if doctor_id=1  for this we have to make the custom queue 
+	 */
+	@Test
+	public void getAppointment() {
+		
+		Appointment appoint = appointmentRepo.getAppoint(1L);
+		assertNotNull(appoint);		
+		System.out.println("Appoint id :-"+appoint.getId());
+		System.out.println("Appoint resion :-"+appoint.getReason());
+		System.out.println("Appoint Assigned Doctor info :- "+appoint.getDoctor());
+		System.out.println("Patient Info :-"+appoint.getPatient());
+		System.out.println("Insurance Info:-"+appoint.getPatient().getInsurance());
+		
+	}
+	
+	/**
+	 * Find all Doctors info and print it use java 8 concepts
+	 * java 8 Concept used : Supplier ,Consumer ,Functional Interface ,Streams
+	 *
+	 * @author Rohit Chavan
+	 */
+	@Test
+	 public void testDoctor() {
+		 
+		 Supplier<List<Doctor>> suppliDoctorInfo=()->doctorRepo.findAll();
+		 
+		 suppliDoctorInfo.get().stream().forEach(p->{
+			System.out.println(p);
+		 });
+	 }
 }

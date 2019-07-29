@@ -18,7 +18,7 @@ public class Appointment {
 	private boolean ended;
 	private String reason;
 
-	@ManyToOne(targetEntity = Patient.class)
+	@ManyToOne(targetEntity =Patient.class )
 	private Patient patients;
 	@ManyToOne(targetEntity = Doctor.class)
 	private Doctor doctors;

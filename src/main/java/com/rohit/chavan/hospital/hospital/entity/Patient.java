@@ -101,8 +101,8 @@ public class Patient {
 
 	@Override
 	public String toString() {
-		return "Patient [id=" + id + ", fname=" + fname + ", lname=" + lname + ", phone=" + phone + ", insurance="
-				+ insurance + ", doctors=" + doctors + ", appointments=" + appointments + "]";
+		return "Patient [id=" + id + ", fname=" + fname + ", lname=" + lname + ", phone=" + phone + "]";
 	}
 
+	
 }
