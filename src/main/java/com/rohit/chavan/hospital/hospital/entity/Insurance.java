@@ -4,6 +4,7 @@ import javax.persistence.Embeddable;
 
 /**
  * Insurance pojo for component inheritance
+ * 
  * @author Rohit Chavan
  *
  */
@@ -35,4 +36,10 @@ public class Insurance {
 	public void setCopay(double copay) {
 		this.copay = copay;
 	}
+
+	@Override
+	public String toString() {
+		return "Insurance [providerName=" + providerName + ", copay=" + copay + "]";
+	}
+	
 }
