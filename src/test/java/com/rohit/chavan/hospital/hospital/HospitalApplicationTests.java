@@ -2,6 +2,7 @@ package com.rohit.chavan.hospital.hospital;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -135,6 +136,7 @@ public class HospitalApplicationTests {
 	@Autowired
 	private AppointmentRepo appointmentRepo;
 
+
 	/**
 	 * make appointments and assign doctors and patient.
 	 * 
@@ -188,39 +190,93 @@ public class HospitalApplicationTests {
 	}
 
 	/**
-	 * @author Rohit chavan How to use Stream and Optional in Spring boot
-	 *         application Examples
+	 * @author Rohit chavan
+	 *  How to use Stream and Optional in Spring boot application Examples
 	 */
 	@Test
 	public void streamJavaExamples() {
 
 		Long[] ids = { 1L, 2L, 3L, 4L, 5L };
 
-		// retrive all the data where id in(1,2,3,4,5)
-		List<Optional<Doctor>> collect = Stream.of(ids).map(doctorRepo::findById).collect(Collectors.toList());
-		// check the length of list and ids array is equal or not
+		List<Optional<Doctor>> collect = Stream.of(ids)
+					.map(doctorRepo::findById)
+					.collect(Collectors.toList());
+
 		assertEquals(collect.size(), ids.length);
 
-		collect.stream().flatMap(Optional::stream).forEach(p -> {
-		//	String fname = Optional.ofNullable(p).orElseThrow(NullPointerException::new).getFname();
-			System.out.println(p.getFname());
-			
-		});
+		List<String> allNames = collect.stream().filter(p -> p.isPresent()).map(p -> {
+			System.out.println(p.get().getFname());
+			return p.get().getFname();
+		}).collect(Collectors.toList());
 
-		// retrive all name where speciality = 'psychiatric'
+		/**
+		 * safer side code if you don't know the resultant structure
+		 * 
+		 */
 
-		collect.stream().filter(p -> p != null)
-				.filter(p1 -> Optional.ofNullable(p1).get().get().getSpeciality().equalsIgnoreCase("psychiatric"))
+			List<String> allNamesWithIDsArray = collect.stream()
+				.flatMap(p -> p.isPresent() ? Stream.of(p.get()) : Stream.empty())
+				.peek(p -> System.out.println(p.getFname()))
+				.map(p -> p.getFname()).collect(Collectors.toList());
+
+		/*
+		 * java 9 way 
+		 * collect.stream().flatMap(Optional::stream).forEach(p -> {
+		 * 		System.out.println(p.getFname()); 
+		 * });
+		 */
+		
+
+		List<String> allName = collect.stream()
+				.filter(p -> p != null)
 				.map(m1 -> m1.get().getFname())
-				.peek(p->System.out.println(p))
+				.peek(p -> System.out.println(p))
 				.collect(Collectors.toList());
+		
+		
+		
+		/**
+		 *  
+		 * effictive way in java 8
+		 * 
+		 *  retrive all name where speciality = 'psychiatric'
+		 */
+		 List<String> allNamesWithSpecialityPsy = collect.stream()
+				 		.flatMap(p->p.isPresent()?Stream.of(p.get()):Stream.empty())
+				 		.filter(p->p.getSpeciality().equalsIgnoreCase("psychiatric"))
+				 		.peek(p->System.out.println(p.getFname()))
+				 		.map(p->p.getFname())
+				 		.collect(Collectors.toList());
+		 
+		 
+		 
+		 
+		 /**
+		  * Simple Way 
+		  * 
+		  */
+		
+		 		List<String> whereSpecificationPsy = collect.stream().filter(Optional::isPresent)
+		 		.map(Optional::get)
+		 		.filter(p->p.getSpeciality().equalsIgnoreCase("psychiatric"))
+		 		.map(p->p.getFname())
+		 		.collect(Collectors.toList());
+		 			
+		 
+		 
 
-		// another way
-
-		List<Doctor> allDoctors = collect.stream().flatMap(Optional::stream).collect(Collectors.toList());
-		allDoctors.stream().filter(p -> p.getSpeciality().equalsIgnoreCase("psychiatric")).forEach(o -> {
-			System.out.println(o.getFname());
-		});
+		/*
+		 * java 9 way
+		 * 
+		 * retrive all name where speciality = 'psychiatric'
+		 * List<Doctor> allDoctors =collect.stream().flatMap(Optional::stream)
+		 * .collect(Collectors.toList());
+		 * 
+		 * allDoctors.stream().filter(p ->p.getSpeciality().equalsIgnoreCase("psychiatric"))
+		 * 		.forEach(o -> {
+		 * 					System.out.println(o.getFname()); 
+		 * });
+		 */
 
 	}
 }
