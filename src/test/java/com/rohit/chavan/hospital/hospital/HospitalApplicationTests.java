@@ -202,6 +202,30 @@ public class HospitalApplicationTests {
 					.map(doctorRepo::findById)
 					.collect(Collectors.toList());
 
+		
+		/**
+		 *  
+		 * for understanding how List<Optional<Something> Build internally
+		 * 
+		 * 
+		 *  List<Optional<Doctor>> = Arrays.asList(
+		 *  	Optional.empty(),
+		 *  	Optional.of(new Doctor("fname","lname","speci","id")),
+		 *  	Optional.empty(),
+		 *  	Optional.empty(),
+		 *  	Optional.of(new Doctor("fname","lname","speci","id")
+		 *  )
+ 		 *
+		 */
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		assertEquals(collect.size(), ids.length);
 
 		List<String> allNames = collect.stream().filter(p -> p.isPresent()).map(p -> {
@@ -252,18 +276,15 @@ public class HospitalApplicationTests {
 		 
 		 
 		 /**
-		  * Simple Way 
+		  * Simple Way java 8 
 		  * 
 		  */
 		
-		 		List<String> whereSpecificationPsy = collect.stream().filter(Optional::isPresent)
-		 		.map(Optional::get)
-		 		.filter(p->p.getSpeciality().equalsIgnoreCase("psychiatric"))
-		 		.map(p->p.getFname())
-		 		.collect(Collectors.toList());
-		 			
-		 
-		 
+		List<String> whereSpecificationPsy = collect.stream().filter(Optional::isPresent)
+		 			.map(Optional::get)
+		 			.filter(p->p.getSpeciality().equalsIgnoreCase("psychiatric"))
+		 			.map(p->p.getFname())
+		 			.collect(Collectors.toList());
 
 		/*
 		 * java 9 way
