@@ -6,9 +6,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -189,6 +192,97 @@ public class HospitalApplicationTests {
 		});
 	}
 
+	/**
+	 * join using jpql
+	 * select new Map(u.reason as resion ,p.fname as patientname,d.fname as doctorname) 
+	 * from Appointment as u 
+	 * inner join Patient as p on u.patients=p.id   
+	 * inner join Doctor as d on u.doctors=d.id 
+	 */
+	@Test
+	public void testJpql() {
+		
+		
+		/**
+		 * 
+		 * find doctor_name ,resion ,patient_name from appointment
+		 */
+		List<Map<String, Object>> appointmentPatientAndDoctorInfo = appointmentRepo.getAppointmentPatientAndDoctorInfo(); 
+		for (Map<String, Object> map : appointmentPatientAndDoctorInfo) {
+		        for (Map.Entry<String, Object> entry : map.entrySet()) {
+		            String key = entry.getKey();
+		            Object value = entry.getValue();
+		            System.out.println(key + " = " + value);
+		        }
+
+		   }
+		/**
+		 * 
+		 * using java stream 
+		 * 
+		 */
+			
+		List<Appointment> findAll = appointmentRepo.findAll();
+		findAll.forEach(p->{
+			System.out.println(p.getDoctor().getFname());
+			System.out.println(p.getPatient().getFname());
+			System.out.println(p.getReason());
+		});
+		
+		
+	}
+	
+	
+	/**
+	 * 
+	 * List<Map<String,Object>> to List<Object> using java 8
+	 * 
+	 */
+	
+	
+	@Test
+	public void testListMapStringObject() {
+		
+	     List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+	        Map<String, Object> map = new HashMap<String, Object>();
+	        map.put("foo", "bar1");
+	        map.put("foo1", "bar2");
+	        map.put("foo2", "bar3");
+	        Map<String, Object> map1 = new HashMap<String, Object>();
+	        
+	        map1.put("foo", "bar1");
+	        map1.put("foo1", "bar2");
+	        map1.put("foo2", "bar3");
+	        Map<String, Object> map2 = new HashMap<String, Object>();
+	        map2.put("foo", "bar1");
+	        map2.put("foo1", "bar2");
+	        map2.put("foo2", "bar3");
+	        
+	        list.add(map);
+	        list.add(map1);
+	        list.add(map2);
+	        
+	        
+	      List<Object> flatMappedResult = list.stream().flatMap(
+	    		  									p->p.entrySet().stream().map(p1->p1.getValue()).distinct()
+	    		  						).collect(Collectors.toList());
+	      
+	      flatMappedResult.forEach(p->{
+	    	 System.out.println(p);
+	      });
+	      
+		
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * @author Rohit chavan
 	 *  How to use Stream and Optional in Spring boot application Examples

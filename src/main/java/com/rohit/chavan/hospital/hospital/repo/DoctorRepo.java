@@ -7,3 +7,5 @@ import com.rohit.chavan.hospital.hospital.entity.Doctor;
 public interface DoctorRepo extends JpaRepository<Doctor, Long> {
 
 }
+
+
