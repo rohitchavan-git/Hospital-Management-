@@ -270,15 +270,49 @@ public class HospitalApplicationTests {
 	      flatMappedResult.forEach(p->{
 	    	 System.out.println(p);
 	      });
-	      
-		
-		
-		
+	      	
 	}
 	
 	
-	
-	
+	/**
+	 * @author rohit Chavan 
+	 * 
+	 */
+	@Test
+	public void checkPerformanceOfQuery() {
+		
+		List<Long> ids=new ArrayList<>();
+		ids.add(1L);
+		ids.add(2L);
+		ids.add(3L);
+		ids.add(4L);
+		ids.add(5L);
+		List<List<Doctor>> emps=new ArrayList<>();
+		//mysql database IN limit
+		if(ids.size() > 1000) {
+			int k=0,j=1000;
+			int iteration=ids.size()%1000;
+			for(int i=0;i<iteration;i++) {
+				List<Long> subList=new ArrayList<>();
+				if(j<ids.size()) {
+					 subList = ids.subList(k, j);
+				}else {
+					subList=ids.subList(k, ids.size());
+				}
+				k=k+1000;
+				j=j+1000;
+				List<List<Doctor>> doctors = Stream.of(subList).map(doctorRepo::getAllDoctor).collect(Collectors.toList());
+				emps.addAll(doctors);
+			}
+		}else {
+			
+			
+			
+			emps=Stream.of(ids).map(doctorRepo::getAllDoctor).collect(Collectors.toList());
+		}
+		List<Doctor> flatEmps = emps.stream().flatMap(List::stream).collect(Collectors.toList());
+		flatEmps.stream().peek(System.out::println);
+	}
 	
 	
 	
@@ -311,14 +345,6 @@ public class HospitalApplicationTests {
 		 *  )
  		 *
 		 */
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		assertEquals(collect.size(), ids.length);
 
